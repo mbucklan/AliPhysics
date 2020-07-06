@@ -736,14 +736,14 @@ void AliAnalysisTaskSEXicTopKpi::UserCreateOutputObjects()
 
   // extra variables for c-deuteron
   if(fIsCdeuteronAnalysis){
-    var = new Float_t[43];
+    var = new Float_t[44];
     Short_t resp;
-    TString varNames[44]={"pt","pAngle","lxy","nlxy","ptP","ptK","ptPi","vtxchi2","sigmaVtx","sumd02","dca1","dca2","dca3","nd01","nd02","nd03","d0Lc","cosThetaStar1","cosThetaStar2","m_pKpi","m_piKp","flagMC","w_FromLc_toXic","nSig_TPC_prot_0","nSig_TOF_prot_0","nSig_TPC_pion_0","nSig_TOF_pion_0","nSig_TPC_kaon_1","nSig_TOF_kaon_1","nSig_TPC_prot_2","nSig_TOF_prot_2","nSig_TPC_pion_2","nSig_TOF_pion_2","decayL","ndecayL","dist12","dca","pAngleXY","massHypo","cDeutMCpt","deutMCptTrk0","deutMCptTrk1","deutMCptTrk2","massHypoFilt_respCuts_respPID"};
+    TString varNames[45]={"pt","pAngle","lxy","nlxy","ptP","ptK","ptPi","vtxchi2","sigmaVtx","sumd02","dca1","dca2","dca3","nd01","nd02","nd03","d0Lc","cosThetaStar1","cosThetaStar2","m_pKpi","m_piKp","flagMC","w_FromLc_toXic","nSig_TPC_prot_0","nSig_TOF_prot_0","nSig_TPC_pion_0","nSig_TOF_pion_0","nSig_TPC_kaon_1","nSig_TOF_kaon_1","nSig_TPC_prot_2","nSig_TOF_prot_2","nSig_TPC_pion_2","nSig_TOF_pion_2","decayL","ndecayL","dist12","dca","pAngleXY","massHypo","cDeutMCpt","deutMCptTrk0","deutMCptTrk1","deutMCptTrk2","isDeuteronInjected","massHypoFilt_respCuts_respPID"};
     fTreeVar=new TTree("T","tree with variables");
-    for(Int_t k=0;k<43;k++){
+    for(Int_t k=0;k<44;k++){
       fTreeVar->Branch(varNames[k].Data(),&var[k]);
     }
-    fTreeVar->Branch(varNames[43].Data(),&resp);
+    fTreeVar->Branch(varNames[44].Data(),&resp);
   } else{
     var = new Float_t[33];
     Short_t resp;
@@ -1057,13 +1057,13 @@ void AliAnalysisTaskSEXicTopKpi::UserExec(Option_t */*option*/)
 
   // c-deuteron has a few extra variables
   if(fIsCdeuteronAnalysis){
-    var = new Float_t[43];
-    TString varNames[44]={"pt","pAngle","lxy","nlxy","ptP","ptK","ptPi","vtxchi2","sigmaVtx","sumd02","dca1","dca2","dca3","nd01","nd02","nd03","d0Lc","cosThetaStar1","cosThetaStar2","m_pKpi","m_piKp","flagMC","w_FromLc_toXic","nSig_TPC_prot_0","nSig_TOF_prot_0","nSig_TPC_pion_0","nSig_TOF_pion_0","nSig_TPC_kaon_1","nSig_TOF_kaon_1","nSig_TPC_prot_2","nSig_TOF_prot_2","nSig_TPC_pion_2","nSig_TOF_pion_2","decayL","ndecayL","dist12","dca","pAngleXY","massHypo","cDeutMCpt","deutMCptTrk0","deutMCptTrk1","deutMCptTrk2","massHypoFilt_respCuts_respPID"};
+    var = new Float_t[44];
+    TString varNames[45]={"pt","pAngle","lxy","nlxy","ptP","ptK","ptPi","vtxchi2","sigmaVtx","sumd02","dca1","dca2","dca3","nd01","nd02","nd03","d0Lc","cosThetaStar1","cosThetaStar2","m_pKpi","m_piKp","flagMC","w_FromLc_toXic","nSig_TPC_prot_0","nSig_TOF_prot_0","nSig_TPC_pion_0","nSig_TOF_pion_0","nSig_TPC_kaon_1","nSig_TOF_kaon_1","nSig_TPC_prot_2","nSig_TOF_prot_2","nSig_TPC_pion_2","nSig_TOF_pion_2","decayL","ndecayL","dist12","dca","pAngleXY","massHypo","cDeutMCpt","deutMCptTrk0","deutMCptTrk1","deutMCptTrk2","isDeuteronInjected","massHypoFilt_respCuts_respPID"};
     if(fFillTree){
-      for(Int_t k=0;k<43;k++){
+      for(Int_t k=0;k<44;k++){
         fTreeVar->SetBranchAddress(varNames[k].Data(),&var[k]);
       }
-      fTreeVar->SetBranchAddress(varNames[43].Data(),&resp);
+      fTreeVar->SetBranchAddress(varNames[44].Data(),&resp);
     }
   } else{
     var = new Float_t[33];
@@ -1456,19 +1456,19 @@ void AliAnalysisTaskSEXicTopKpi::UserExec(Option_t */*option*/)
             if(fIsCdeuteronAnalysis){
               // for c-deuteron: signal has no downsampling, background has downsampling
               if(fReadMC && isTrueLambdaCorXic > 1000){
-                FillTree(io3Prong,massHypothesis,var,isTrueLambdaCorXic,aod,part,fmcArray);
+                FillTree(io3Prong,massHypothesis,var,isTrueLambdaCorXic,aod,part,fmcArray,mcHeader);
 	      }
               else{
                 if(candPt<fpT_down){  // downsampling for low pT
 	          if(candPt*1000.-(Int_t)(candPt*1000)<fLowpT_down){
 	            // fill with background
-		    if(fReadMC && isTrueLambdaCorXic==0)   FillTree(io3Prong,massHypothesis,var,isTrueLambdaCorXic,aod,part,fmcArray);
+		    if(fReadMC && isTrueLambdaCorXic==0)   FillTree(io3Prong,massHypothesis,var,isTrueLambdaCorXic,aod,part,fmcArray,mcHeader);
 	          }
 	        } 
 	        else{   // downsampling for high pT
 	          if(candPt*1000.-(Int_t)(candPt*1000)<fHighpT_down){
 		    // fill with background
-		    if(fReadMC && isTrueLambdaCorXic==0)   FillTree(io3Prong,massHypothesis,var,isTrueLambdaCorXic,aod,part,fmcArray);
+		    if(fReadMC && isTrueLambdaCorXic==0)   FillTree(io3Prong,massHypothesis,var,isTrueLambdaCorXic,aod,part,fmcArray,mcHeader);
 	          }
 	        }
               }
@@ -2566,7 +2566,7 @@ Int_t AliAnalysisTaskSEXicTopKpi::FlagCandidateWithVariousCuts(AliAODRecoDecayHF
   return sellevel;
 }
 //
-void AliAnalysisTaskSEXicTopKpi::FillTree(AliAODRecoDecayHF3Prong *cand,Int_t massHypothesis,Float_t *varPointer, Int_t flagMC,AliAODEvent *aod, AliAODMCParticle* p=0x0, TClonesArray* array_MC=0x0){ 
+void AliAnalysisTaskSEXicTopKpi::FillTree(AliAODRecoDecayHF3Prong *cand,Int_t massHypothesis,Float_t *varPointer, Int_t flagMC,AliAODEvent *aod, AliAODMCParticle* p=0x0, TClonesArray* array_MC=0x0, AliAODMCHeader* header_MC/*= NULL*/){ 
   varPointer[0]=cand->Pt();
   // to save memory, let's discard all candidates with pT out of range
   if((varPointer[0]<fminpT_treeFill || varPointer[0]>fmaxpT_treeFill) && !fIsCdeuteronAnalysis)  return;
@@ -2747,6 +2747,21 @@ void AliAnalysisTaskSEXicTopKpi::FillTree(AliAODRecoDecayHF3Prong *cand,Int_t ma
         }
       }
     }
+    varPointer[43] = -1; // isDeuteronInjected
+    for(int i=0; i<3; i++){
+      AliAODTrack* trk_prong = (AliAODTrack*) cand->GetDaughter(i);
+      Int_t prLabel = TMath::Abs(trk_prong->GetLabel());
+      if(prLabel>=0){
+        AliAODMCParticle* partMC_prong = (AliAODMCParticle*) array_MC->At(prLabel);
+        Int_t pdg = TMath::Abs(partMC_prong->GetPdgCode());
+        if(pdg==1000010020){
+          Bool_t isDeuteronTrackInjected = AliVertexingHFUtils::IsTrackInjected(prLabel, header_MC, array_MC);
+          Printf("flagMC = %d, isDeuteronTrackInjected = %s",flagMC,isDeuteronTrackInjected?"true":"false");
+          if(isDeuteronTrackInjected) varPointer[43] = 1;
+          else varPointer[43] = 0;
+        }
+      }
+    }
   }
 
   fTreeVar->Fill();
@@ -2880,8 +2895,16 @@ void AliAnalysisTaskSEXicTopKpi::PrepareTracks(AliAODEvent *aod,TClonesArray *mc
       // remove track if only keeping signal, or if it is injected
       if(!isTrackCD) { 
         if(fIsKeepOnlyCdeuteronSignal) continue;
-        Bool_t isBkgTrackInjected = AliVertexingHFUtils::IsTrackInjected(track,mcHeader,mcArray);
-        if(isBkgTrackInjected) continue;
+        // remove injected tracks that are not deuterons
+        Int_t lab=TMath::Abs(track->GetLabel());
+        if(lab>0){
+          Bool_t isBkgTrackInjected = AliVertexingHFUtils::IsTrackInjected(lab,mcHeader,mcArray);
+          AliAODMCParticle *mcPart=(AliAODMCParticle*)mcArray->At(lab);
+	  Int_t pdg=TMath::Abs(mcPart->GetPdgCode());
+          if(isBkgTrackInjected && pdg!=1000010020) continue;
+          if(isBkgTrackInjected && pdg==1000010020) Printf("Injected deuteron!");
+          if(!isBkgTrackInjected && pdg==1000010020) Printf("Not-injected deuteron!");
+        }
       }
     }
     if(fIsXicUpgradeAnalysis && fReadMC) {
